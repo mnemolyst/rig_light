@@ -1,6 +1,6 @@
 #include "FastLED.h"
 
-#define BRIGHTNESS 50
+#define BRIGHTNESS 255
 #define N_LEDS 240
 
 #define ENCODER_OUT_A 6 // CLK
@@ -21,7 +21,7 @@ CRGB leds[N_LEDS];
 
 int16_t hue = 0;
 int16_t sat = 255;
-int16_t val = 255;
+int16_t val = 64;
 
 uint8_t state_a;
 uint8_t state_b;
@@ -38,7 +38,7 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.setCorrection(TypicalSMD5050);
   for (uint16_t i = 0; i < N_LEDS; i++) {
-    leds[i] = CRGB::Red;
+    leds[i] = CHSV(hue, sat, val);
   }
   FastLED.show();
 
