@@ -13,7 +13,8 @@
 enum MODE {
   SOLID,
   SCROLL,
-  STROBE
+  STROBE,
+  FLICKER
 };
 
 enum KNOB_CHG {
@@ -24,7 +25,7 @@ enum KNOB_CHG {
   SCALE
 };
 
-MODE mode = SOLID;
+MODE mode = FLICKER;
 KNOB_CHG knob_chg = VAL;
 
 CRGB leds[N_LEDS];
@@ -51,9 +52,15 @@ float strobe_speed = 0.002;
 float strobe_acc = 0;
 boolean strobe_on = false;
 
+#define FLICKER_XN 8
+float flicker_xm[FLICKER_XN];
+
 void setup() {
   delay(1000);
   random16_set_seed(analogRead(0));
+  for (uint8_t i = 0; i < FLICKER_XN; i++) {
+    flicker_xm[i] = random8();
+  }
 
   FastLED.addLeds<NEOPIXEL, LED_OUT>(leds, N_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
@@ -275,6 +282,10 @@ void loop_strobe() {
   }
 }
 
+void loop_flicker() {
+  t_m = millis();
+}
+
 void loop() {
   state_a = digitalRead(ENCODER_OUT_A);
   state_b = digitalRead(ENCODER_OUT_B);
@@ -287,6 +298,8 @@ void loop() {
     loop_scroll();
   } else if (mode == STROBE) {
     loop_strobe();
+  } else if (mode == FLICKER) {
+    loop_flicker();
   }
   oldstate_a = state_a;
 }
