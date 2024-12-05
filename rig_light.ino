@@ -218,16 +218,6 @@ void loop_scroll() {
   } else {
     clk = false;
   }
-
-  for (uint8_t i = 0; i < N_LEDS; i++) {
-    uint16_t this_hue = scroll_pos + scroll_scale * i * scroll_leds_scale;
-    while (this_hue > 255) {
-      this_hue -= 256;
-    }
-    leds[i] = CHSV(this_hue, sat, val);
-  }
-  FastLED.show();
-
   if (state_a != oldstate_a && state_a == 0) {
     if (state_b != state_a) {
       if (clk) {
@@ -261,6 +251,15 @@ void loop_scroll() {
       }
     }
   }
+
+  for (uint8_t i = 0; i < N_LEDS; i++) {
+    uint16_t this_hue = scroll_pos + scroll_scale * i * scroll_leds_scale;
+    while (this_hue > 255) {
+      this_hue -= 256;
+    }
+    leds[i] = CHSV(this_hue, sat, val);
+  }
+  FastLED.show();
 }
 
 void loop_strobe() {
@@ -345,12 +344,14 @@ void loop_strobe() {
     if (state_b != state_a) {
       if (clk) {
         mode = SCROLL;
+        knob_chg = SPEED;
         old_t_m = t_m = millis();
         return;
       }
     } else {
       if (clk) {
         mode = SOLID;
+        knob_chg = HUE;
         return;
       }
     }
